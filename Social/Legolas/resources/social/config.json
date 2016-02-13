@@ -1,0 +1,37 @@
+{
+	"type": "Collection",
+	"properties": {
+		"userid": {
+			"name": "userid",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "userid",
+			"order": 0
+		},
+		"posttime": {
+			"name": "posttime",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "posttime",
+			"order": 1
+		},
+		"comment": {
+			"name": "comment",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "comment",
+			"order": 2
+		},
+		"pictures": {
+			"name": "pictures",
+			"type": "array",
+			"typeLabel": "array",
+			"required": false,
+			"id": "pictures",
+			"order": 3
+		}
+	}
+}

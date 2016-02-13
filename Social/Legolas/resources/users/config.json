@@ -1,0 +1,45 @@
+{
+	"type": "UserCollection",
+	"properties": {
+		"firstname": {
+			"name": "firstname",
+			"type": "string",
+			"typeLabel": "string",
+			"required": false,
+			"id": "firstname",
+			"order": 0
+		},
+		"lastname": {
+			"name": "lastname",
+			"type": "string",
+			"typeLabel": "string",
+			"required": false,
+			"id": "lastname",
+			"order": 1
+		},
+		"dateofbirth": {
+			"name": "dateofbirth",
+			"type": "string",
+			"typeLabel": "string",
+			"required": false,
+			"id": "dateofbirth",
+			"order": 2
+		},
+		"createdtime": {
+			"name": "createdtime",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "createdtime",
+			"order": 3
+		},
+		"modifiedtime": {
+			"name": "modifiedtime",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "modifiedtime",
+			"order": 4
+		}
+	}
+}
