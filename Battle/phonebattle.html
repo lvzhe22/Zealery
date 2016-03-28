@@ -1,0 +1,77 @@
+<html><head lang="en">
+    <meta charset="UTF-8">
+    <link href="http://www.revoemag.com/css/all.css" rel="stylesheet" type="text/css">
+    <title>Zealery Battle</title>
+</head>
+<body>
+<div class="page page-modal ng-scope" id="BattlePage" style="display: block; height: 100%;min-width: 600px;">
+    <div>
+        <div class="container page-titlebar">
+            <div class="inner">
+                <div class="title">Zealery Battle</div>
+            </div>
+            <div class="battle-countdown"><span id="spanClock"></span></div>
+        </div>
+
+        <div id="btnStart">
+            <div class="container battle-start">
+                <div class="btns">
+                    <span class="btn btn-primary ng-binding" onclick="start()">5 items in the list. Start Battle!</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="btnStop" style="display: none;">
+            <div class="container battle-start" style="height:24px;">
+                <div class="btns">
+                    <span class="btn btn-primary ng-binding" onclick="gameOver()" style="font-size:18px;">Stop Battle</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="divBattle" style="display: none;" class="container battle-box">
+            <div id="divLeft" class="battle-item pull-left">
+                <h3 class="text-right" id="descLeft">FLYING LEATHER JACKET</h3>
+                <div class="pic clickable" onclick="chooseLeft()" style="height:240px;width:240px;float:right;">
+                    <img id="picLeft" src="http://www.revoemag.com/img/item/item21.jpg" />
+                </div>
+                <input type="hidden" id="hdnLeftId" value="-1"/>
+            </div>
+
+            <div id="divRight" class="battle-item pull-right">
+                <h3 id="descRight">FLYING LEATHER JACKET</h3>
+                <div class="pic clickable" onclick="chooseRight()" style="height:240px;width:240px">
+                    <img id="picRight" src="http://www.revoemag.com/img/item/item24.jpg" />
+                </div>
+                <input type="hidden" id="hdnRightId" value="-1"/>
+            </div>
+            <div class="clear"></div>
+            <div class="percent">Round: <span id="spanRound">0</span>/10</div>
+        </div>
+
+        <div id="divResult" class="container battle-result" style="display:none;">
+            <h1>Battle Result &nbsp; <a class="btn btn-primary" href="#" onclick="location.reload(true)">Restart</a></h1>
+            <div id="divRetInner"></div>
+            <!--<div class="item bat-res-item ng-scope" >-->
+            <!--<div class="pic">-->
+                <!--<img src="http://www.revoemag.com/img/item/item3.jpg">-->
+            <!--</div>-->
+            <!--<div class="info">-->
+                <!--<h3><a href="#" class="ng-binding">FLYING LEATHER JACKET</a></h3>-->
+            <!--</div>-->
+            <!--<div class="res">-->
+                <!--No.<b class="ng-binding">1</b>-->
+            <!--</div>-->
+            <!--<div class="btns">-->
+                <!--<div class="icon icon-36 icon-close icon-btn"></div>-->
+                <!--<div class="icon icon-36 icon-wish icon-btn"></div>-->
+                <!--<div class="icon icon-36 icon-cart icon-btn"></div>-->
+            <!--</div>-->
+            <!--<div class="clear"></div>-->
+            <!--</div>-->
+
+        </div>
+    </div>
+</div>
+<script src="battle.js" ></script>
+</body></html>

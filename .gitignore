@@ -1,0 +1,13 @@
+**/node_modules
+Social/Legolas/data/
+/Social/Legolas/.dpd/**
+
+Social/Legolas/.dpd/pids/mongod
+
+Social/Legolas/data/local.0
+
+Social/Legolas/data/local.ns
+
+Social/Legolas/npm-debug.log
+
+Social/Legolas/.dpd/pids/mongod
