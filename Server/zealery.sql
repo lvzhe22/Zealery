@@ -1,8 +1,13 @@
+-----------------------------------------------------------------
+-- Create DB
+-----------------------------------------------------------------
 CREATE DATABASE zealery
   WITH ENCODING='UTF8'
        CONNECTION LIMIT=-1;
 
-
+-----------------------------------------------------------------
+-- Create Tables
+-----------------------------------------------------------------
 
 CREATE TABLE public.users
 (
@@ -111,5 +116,213 @@ CREATE TABLE public.recommandpost
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+
+-----------------------------------------------------------------
+-- Create Functions
+-----------------------------------------------------------------
+-- Function: public."followUser"(integer, integer)
+
+-- DROP FUNCTION public."followUser"(integer, integer);
+
+CREATE OR REPLACE FUNCTION public."followUser"(
+    fromuserid integer,
+    touserid integer)
+  RETURNS integer AS
+$BODY$declare last_id integer;
+begin
+insert into public.follow(fromuserid,touserid,status,followtime) values(fromuserid, touserid, cast(0 as bit), now()) RETURNING id INTO last_id;
+return last_id;
+end;$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public."followUser"(integer, integer)
+  OWNER TO postgres;
+
+
+-- Function: public."likePost"(integer, integer)
+
+-- DROP FUNCTION public."likePost"(integer, integer);
+
+CREATE OR REPLACE FUNCTION public."likePost"(
+    uid integer,
+    pid integer)
+  RETURNS integer AS
+$BODY$declare last_id integer;
+begin
+insert into public.likepost(userid, postid, "timestamp") values (uid, pid, now()) RETURNING id INTO last_id;
+return last_id;
+end;$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public."likePost"(integer, integer)
+  OWNER TO postgres;
+
+
+-- Function: public."postComment"(text, text, integer)
+
+-- DROP FUNCTION public."postComment"(text, text, integer);
+
+CREATE OR REPLACE FUNCTION public."postComment"(
+    cmt text,
+    padr text,
+    uid integer)
+  RETURNS integer AS
+$BODY$declare last_pid integer;
+begin
+insert into public.post(userid, posttime, comment) values (uid, now(), cmt) RETURNING pid INTO last_pid;
+insert into public.postpictures(userid, postid, address) values(uid, last_pid, padr);
+return last_pid;
+end;$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public."postComment"(text, text, integer)
+  OWNER TO postgres;
+
+
+-- Function: public."unfollowUser"(integer, integer)
+
+-- DROP FUNCTION public."unfollowUser"(integer, integer);
+
+CREATE OR REPLACE FUNCTION public."unfollowUser"(
+    fuserid integer,
+    tuserid integer)
+  RETURNS integer AS
+$BODY$begin
+update public.follow
+set status = cast(1 as bit), followtime = now()
+where fromuserid = fuserid and touserid = tuserid and status = cast(0 as bit);
+return 1;
+end;$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public."unfollowUser"(integer, integer)
+  OWNER TO postgres;
+
+
+-- Function: public."unlikePost"(integer, integer)
+
+-- DROP FUNCTION public."unlikePost"(integer, integer);
+
+CREATE OR REPLACE FUNCTION public."unlikePost"(
+    uid integer,
+    pid integer)
+  RETURNS integer AS
+$BODY$begin
+delete from public.likepost where userid = uid and postid = pid;
+return 1;
+end;$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public."unlikePost"(integer, integer)
+  OWNER TO postgres;
+
+
+-- Function: public."updateComment"(text, text, integer)
+
+-- DROP FUNCTION public."updateComment"(text, text, integer);
+
+CREATE OR REPLACE FUNCTION public."updateComment"(
+    cmt text,
+    padr text,
+    pid integer)
+  RETURNS integer AS
+$BODY$begin
+update public.post set comment=cmt, posttime=now
+where postid = pid;
+update public.postpictures set address=padr
+where postid = pid;
+return 1;
+end;$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public."updateComment"(text, text, integer)
+  OWNER TO postgres;
+
+
+-- Function: public."userRegister"(text, text, text, boolean, date, text, smallint, timestamp without time zone, timestamp without time zone)
+
+-- DROP FUNCTION public."userRegister"(text, text, text, boolean, date, text, smallint, timestamp without time zone, timestamp without time zone);
+
+CREATE OR REPLACE FUNCTION public."userRegister"(
+    username text,
+    firstname text,
+    lastname text,
+    gender boolean,
+    dob date,
+    email text,
+    status smallint,
+    createdtime timestamp without time zone,
+    modifiedtime timestamp without time zone)
+  RETURNS integer AS
+$BODY$declare last_uid integer;
+begin
+insert into public.users(username, firstname, lastname, gender,dob,email,status,createdtime, modifiedtime)
+values (username,firstname, lastname, gender,dob,email,status,now(),now())
+RETURNING userid INTO last_uid;
+return last_uid;
+end;$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public."userRegister"(text, text, text, boolean, date, text, smallint, timestamp without time zone, timestamp without time zone)
+  OWNER TO postgres;
+
+
+-- Function: public."userRegisterFast"(text, text, text)
+
+-- DROP FUNCTION public."userRegisterFast"(text, text, text);
+
+CREATE OR REPLACE FUNCTION public."userRegisterFast"(
+    username text,
+    email text,
+    password text)
+  RETURNS integer AS
+$BODY$declare last_uid integer;
+begin
+insert into public.users(username, email, createdtime, modifiedtime)
+values (username,email,now(),now())
+RETURNING userid INTO last_uid;
+return last_uid;
+end;$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public."userRegisterFast"(text, text, text)
+  OWNER TO postgres;
+
+
+-----------------------------------------------------------------
+-- Create Views
+-----------------------------------------------------------------
+
+-- View: public."getUserFollow"
+
+-- DROP VIEW public."getUserFollow";
+
+CREATE OR REPLACE VIEW public."getUserFollow" AS 
+ SELECT follow.id,
+    follow.fromuserid,
+    follow.touserid,
+    follow.status,
+    follow.followtime
+   FROM follow;
+
+ALTER TABLE public."getUserFollow"
+  OWNER TO postgres;
+
+
+-- View: public."getUserPosts"
+
+-- DROP VIEW public."getUserPosts";
+
+CREATE OR REPLACE VIEW public."getUserPosts" AS 
+ SELECT p.userid AS uid,
+    p.posttime AS ptime,
+    p.comment,
+    pp.address AS padr
+   FROM post p,
+    postpictures pp
+  WHERE p.pid = pp.postid;
+
+ALTER TABLE public."getUserPosts"
+  OWNER TO postgres;
 
 
