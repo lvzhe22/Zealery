@@ -4,14 +4,16 @@ $(document).ready(function() {
 
     $('#comment-form').submit(function() {
         //Get the data from the form
-        var name = $('#name').val();
-        var comment = $('#comment').val();
+        var name = $('#name').val().trim();
+        var comment = $('#comment').val().trim();
+        var pic_url = $('#pic').val().trim();
         var cur_time = getCurrentTime();
 
         dpd.social.post({
         userid: "c3d4cca3bd5f6b58",
         posttime: cur_time,
-        comment: comment
+        comment: comment,
+        pictures: [pic_url]
         }, function(comment, error) {
         if (error) return showError(error);
 

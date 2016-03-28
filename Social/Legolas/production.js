@@ -2,7 +2,16 @@ var deployd = require('deployd');
 
 var server = deployd({
   port: process.env.PORT || 5000,
-  env: 'production'
+  env: 'production',
+  db: {
+    host: 'localhost',
+    port: 27017,
+    name: 'deployd',
+    credentials: {
+      username: 'deployd',
+      password: 'deployd'
+    }
+  }
 });
 
 server.listen();
